@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		66214B1E208EEA0A0043F79E /* capture.m in Sources */ = {isa = PBXBuildFile; fileRef = 66214B1D208EEA0A0043F79E /* capture.m */; };
 		66E8ED90206F3450006F00F0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8ED8F206F3450006F00F0 /* main.m */; };
 /* End PBXBuildFile section */
 
@@ -23,6 +24,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		66214B1C208EEA0A0043F79E /* capture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = capture.h; sourceTree = "<group>"; };
+		66214B1D208EEA0A0043F79E /* capture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = capture.m; sourceTree = "<group>"; };
 		66E8ED8C206F344F006F00F0 /* camCapture */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = camCapture; sourceTree = BUILT_PRODUCTS_DIR; };
 		66E8ED8F206F3450006F00F0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -57,6 +60,8 @@
 		66E8ED8E206F344F006F00F0 /* camCapture */ = {
 			isa = PBXGroup;
 			children = (
+				66214B1C208EEA0A0043F79E /* capture.h */,
+				66214B1D208EEA0A0043F79E /* capture.m */,
 				66E8ED8F206F3450006F00F0 /* main.m */,
 			);
 			path = camCapture;
@@ -119,6 +124,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66214B1E208EEA0A0043F79E /* capture.m in Sources */,
 				66E8ED90206F3450006F00F0 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
