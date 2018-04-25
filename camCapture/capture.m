@@ -11,6 +11,7 @@
 @interface capture()
 @property (nonatomic, strong) AVCaptureSession *captureSession;
 @property (nonatomic, strong) AVCaptureDeviceInput *deviceInput;
+@property (nonatomic, strong) AVCaptureStillImageOutput *imageOutput;
 @end
 
 @implementation capture
@@ -51,6 +52,16 @@
         [self.captureSession addInput: self.deviceInput];
     }
     //we now need to configure our capture outputs so that we can actually get an output from the session
+    //since we're only capturing still images for now we just need to setup output for still images
+    self.imageOutput = [AVCaptureStillImageOutput new];
+    //specify JPEG format
+    NSDictionary *outputSettings = @{ AVVideoCodecKey : AVVideoCodecTypeJPEG};
+    [self.imageOutput setOutputSettings:outputSettings];
+    if ([self.captureSession canAddOutput:self.imageOutput]) {
+        [self.captureSession addOutput:self.imageOutput];
+    }
+    
+    //here we 
     
 }
 @end
