@@ -16,4 +16,9 @@
 + (AVCaptureDevice *)getDefaultVid;
 
 - (void) initiateSession: (AVCaptureDevice *) device;
+- (void) startSession;
+- (void) saveImageCapture: (AVCaptureDevice *) device;
+
+- (void) stopSession;
+
 @end

@@ -17,10 +17,15 @@ int main(int argc, const char * argv[]) {
         // insert code here...
 //        NSLog(@"Hello, World!");
 //        capture *ca = [capture alloc];
-        AVCaptureDevice *t;
-        t = [capture getDefaultVid];
-        NSLog(@"%@", t);
-        
+//        AVCaptureDevice *t;
+//        t = [capture getDefaultVid];
+//        NSLog(@"%@", t);
+        //setup session
+        capture *capture = [capture new];
+//        capture.
+//        [capture ]
+        //start session
+        //take picture
     }
     return 0;
 }
