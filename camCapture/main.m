@@ -20,8 +20,16 @@ int main(int argc, const char * argv[]) {
 //        AVCaptureDevice *t;
 //        t = [capture getDefaultVid];
 //        NSLog(@"%@", t);
+        //get default device
+        AVCaptureDevice *device = [capture getDefaultVid];
         //setup session
-        capture *capture = [capture new];
+        capture *c = [capture new];
+        [c initiateSession:device];
+        NSLog(@"initiated session with %@", device);
+//        [c startSession];
+//        NSLog(@"started sesssion");
+        [c saveImageCapture];
+        
 //        capture.
 //        [capture ]
         //start session

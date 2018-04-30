@@ -17,7 +17,7 @@
 
 - (void) initiateSession: (AVCaptureDevice *) device;
 - (void) startSession;
-- (void) saveImageCapture: (AVCaptureDevice *) device;
+- (void) saveImageCapture;
 
 - (void) stopSession;
 
