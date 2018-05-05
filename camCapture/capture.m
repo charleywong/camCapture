@@ -13,6 +13,13 @@
 @property (nonatomic, strong) AVCaptureDeviceInput *deviceInput;
 @property (nonatomic, strong) AVCaptureStillImageOutput *imageOutput;
 @property (nonatomic, strong) AVCaptureConnection *videoConnection;
+
+#if OS_OBJECT_HAVE_OBJC_SUPPORT == 1
+@property (nonatomic, strong) dispatch_queue_t imageQueue;
+#else
+@property (nonatomic, assign) dispatch_queue_t imageQueue;
+#endif
+
 @end
 
 @implementation capture
@@ -39,6 +46,7 @@
     NSError *error;
     //initiate the session
 //    verbose("initiating session");
+    self.imageQueue = dispatch_queue_create("Image Queue", NULL);
     NSLog(@"initiating session");
     self.captureSession = [AVCaptureSession new];
     if ([self.captureSession canSetSessionPreset:AVCaptureSessionPresetPhoto]) {
@@ -50,16 +58,31 @@
     self.deviceInput = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
     //we then add this deviceInput to our captureSession provided there are no errors
     if (!error && [self.captureSession canAddInput:self.deviceInput]) {
+        NSLog(@"adding input");
         [self.captureSession addInput: self.deviceInput];
     }
     //we now need to configure our capture outputs so that we can actually get an output from the session
     //since we're only capturing still images for now we just need to setup output for still images
     self.imageOutput = [AVCaptureStillImageOutput new];
     //specify JPEG format
-//    NSDictionary *outputSettings = @{ AVVideoCodecKey : AVVideoCodecTypeJPEG};
-//    [self.imageOutput]
     self.imageOutput.outputSettings = @{ AVVideoCodecKey : AVVideoCodecTypeJPEG};
-//    [self.imageOutput setOutputSettings:outputSettings];
+    if ([self.captureSession canAddOutput:self.imageOutput]) {
+        NSLog(@"setting image output");
+        [self.captureSession addOutput:self.imageOutput];
+    }
+    
+    //here we need to find the connection whose input port is collecting video
+    //we need to initiate a still image capture
+    for (AVCaptureConnection *connection in self.imageOutput.connections) {
+        for (AVCaptureInputPort *port in [connection inputPorts]) {
+            if ([[port mediaType] isEqual:AVMediaTypeVideo] ) {
+                self.videoConnection = connection;
+                NSLog(@"set video conneciton");
+                break;
+            }
+        }
+        if (self.videoConnection) {break;}
+    }
     if ([self.captureSession canAddOutput:self.imageOutput]) {
         [self.captureSession addOutput:self.imageOutput];
     }
@@ -79,44 +102,43 @@
     if ([self.captureSession canAddOutput:self.imageOutput]) {
         [self.captureSession addOutput:self.imageOutput];
     }
-    NSLog(@"imag outpoot!! : %@", self.imageOutput);
-//    NSLog(@"sesison initiated");
-    [self.captureSession startRunning];
-//    NSLog(@"capture session: %@", self.captureSession);
+
+//    NSLog(@"imag outpoot!! : %@", self.imageOutput);
+//    [self startSession];
 }
 
 -(void)startSession {
     [self.captureSession startRunning];
 }
 -(void) saveImageCapture {
-    NSLog(@"Saving image!");
-//    [self.imageOutput captureStillImageAsynchronouslyFromConnection:self.videoConnection completionHandler:
-//     ^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
-//         //returns NSData representation of the image data and metadata
-//         NSLog(@"getting NSData");
-//         NSData *imageD = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
-//         //write imageD to file
-//         NSLog(@"writing to file");
-//         [imageD writeToFile:@"temp" atomically:YES];
-//
-//     }];
-//    NSLog(@"Captur session: %@", self.captureSession);
-    NSLog(@"image output: %@", self.imageOutput);
-    [self.imageOutput captureStillImageAsynchronouslyFromConnection:self.videoConnection
-                                                              completionHandler:
-     ^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
-         NSLog(@"Error: %@", error);
-         NSLog(@"aldkjal");
-         NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-         
-//         dispatch_async(self.imageQueue, ^{
-             [imageData writeToFile:@"hello.jpg" atomically:YES];
-//         });
-     }];
-    
+//    NSLog(@"imag outpoot!! : %@", self.imageOutput);
+//    NSLog(@"session still running: %hhd", self.captureSession.running);
+    if (self.captureSession.running) {
+//        int i = 0;
+//        while (i < 51475) {
+//            NSLog(@"capture session IS running");
+            [self.imageOutput captureStillImageAsynchronouslyFromConnection:self.videoConnection completionHandler:
+             ^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
+                 //returns NSData representation of the image data and metadata
+                 NSLog(@"getting NSData");
+                 NSData *imageD = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
+                 dispatch_async(self.imageQueue, ^{
+                     //write imageD to file
+                     NSLog(@"writing to file");
+                     [imageD writeToFile:@"temp.jpg" atomically:YES];
+                     NSLog(@"written to file");
+                 });
+//                 [NSThread sleepForTimeInterval:10.0];
+             }];
+//            i++;
+//        }
+    } else {
+        NSLog(@"capture session not running");
+    }
+
     //stop session after completion
-    NSLog(@"Stopping session");
-    [self stopSession];
+//    NSLog(@"Stopping session");
+//    [self stopSession];
 }
 
 -(void) stopSession {

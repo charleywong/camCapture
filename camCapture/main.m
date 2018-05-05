@@ -26,14 +26,11 @@ int main(int argc, const char * argv[]) {
         capture *c = [capture new];
         [c initiateSession:device];
         NSLog(@"initiated session with %@", device);
-//        [c startSession];
-//        NSLog(@"started sesssion");
+        [c startSession];
         [c saveImageCapture];
+        [c stopSession];
+        NSLog(@"executed image capture");
         
-//        capture.
-//        [capture ]
-        //start session
-        //take picture
     }
     return 0;
 }
