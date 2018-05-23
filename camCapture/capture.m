@@ -13,12 +13,7 @@
 @property (nonatomic, strong) AVCaptureDeviceInput *deviceInput;
 @property (nonatomic, strong) AVCaptureStillImageOutput *imageOutput;
 @property (nonatomic, strong) AVCaptureConnection *videoConnection;
-
-#if OS_OBJECT_HAVE_OBJC_SUPPORT == 1
 @property (nonatomic, strong) dispatch_queue_t imageQueue;
-#else
-@property (nonatomic, assign) dispatch_queue_t imageQueue;
-#endif
 
 @end
 
@@ -114,28 +109,29 @@
 //    NSLog(@"imag outpoot!! : %@", self.imageOutput);
 //    NSLog(@"session still running: %hhd", self.captureSession.running);
     if (self.captureSession.running) {
-//        int i = 0;
-//        while (i < 51475) {
-//            NSLog(@"capture session IS running");
-            [self.imageOutput captureStillImageAsynchronouslyFromConnection:self.videoConnection completionHandler:
-             ^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
-                 //returns NSData representation of the image data and metadata
-                 NSLog(@"getting NSData");
-                 NSData *imageD = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
-                 dispatch_async(self.imageQueue, ^{
-                     //write imageD to file
-                     NSLog(@"writing to file");
-                     [imageD writeToFile:@"temp.jpg" atomically:YES];
-                     NSLog(@"written to file");
-                 });
-//                 [NSThread sleepForTimeInterval:10.0];
-             }];
-//            i++;
-//        }
+        
+        
+        int i = 0;
+        while (i < 51475) {
+//            dispatch_async(self.imageQueue, ^{
+                NSString *str = [NSString stringWithFormat:@"temp%d.jpg",i];
+//            __weak __typeof__(str) filename = str;
+                [self.imageOutput captureStillImageAsynchronouslyFromConnection:self.videoConnection completionHandler:
+                 ^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
+                     //returns NSData representation of the image data and metadata
+                     NSData *imageD = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
+                     dispatch_async(self.imageQueue, ^{
+                         [imageD writeToFile:str atomically:YES];
+                     });
+                 }];
+                
+//             });
+            i++;
+        }
     } else {
         NSLog(@"capture session not running");
     }
-
+//    self.imageQueue.
     //stop session after completion
 //    NSLog(@"Stopping session");
 //    [self stopSession];
