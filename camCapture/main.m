@@ -14,12 +14,6 @@
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        // insert code here...
-//        NSLog(@"Hello, World!");
-//        capture *ca = [capture alloc];
-//        AVCaptureDevice *t;
-//        t = [capture getDefaultVid];
-//        NSLog(@"%@", t);
         //get default device
         AVCaptureDevice *device = [capture getDefaultVid];
         //setup session
@@ -29,8 +23,6 @@ int main(int argc, const char * argv[]) {
         [c startSession];
         [c saveImageCapture];
         [c stopSession];
-        NSLog(@"executed image capture");
-        
     }
     return 0;
 }

@@ -40,7 +40,6 @@
 - (void) initiateSession: (AVCaptureDevice *) device {
     NSError *error;
     //initiate the session
-//    verbose("initiating session");
     self.imageQueue = dispatch_queue_create("Image Queue", NULL);
     NSLog(@"initiating session");
     self.captureSession = [AVCaptureSession new];
@@ -97,30 +96,22 @@
     if ([self.captureSession canAddOutput:self.imageOutput]) {
         [self.captureSession addOutput:self.imageOutput];
     }
-
-//    NSLog(@"imag outpoot!! : %@", self.imageOutput);
-//    [self startSession];
 }
 
 -(void)startSession {
     [self.captureSession startRunning];
 }
 -(void) saveImageCapture {
-//    NSLog(@"imag outpoot!! : %@", self.imageOutput);
-//    NSLog(@"session still running: %hhd", self.captureSession.running);
     if (self.captureSession.running) {
-        
-        
         int i = 0;
         while (i < 51475) {
 //            dispatch_async(self.imageQueue, ^{
                 NSString *str = [NSString stringWithFormat:@"temp%d.jpg",i];
-//            __weak __typeof__(str) filename = str;
                 [self.imageOutput captureStillImageAsynchronouslyFromConnection:self.videoConnection completionHandler:
                  ^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
                      //returns NSData representation of the image data and metadata
                      NSData *imageD = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
-                     dispatch_async(self.imageQueue, ^{
+                     dispatch_sync(self.imageQueue, ^{
                          [imageD writeToFile:str atomically:YES];
                      });
                  }];
@@ -131,10 +122,6 @@
     } else {
         NSLog(@"capture session not running");
     }
-//    self.imageQueue.
-    //stop session after completion
-//    NSLog(@"Stopping session");
-//    [self stopSession];
 }
 
 -(void) stopSession {
