@@ -104,21 +104,23 @@
 -(void) saveImageCapture {
     if (self.captureSession.running) {
         int i = 0;
-        while (i < 51475) {
+        while (i < 2) {
 //            dispatch_async(self.imageQueue, ^{
                 NSString *str = [NSString stringWithFormat:@"temp%d.jpg",i];
                 [self.imageOutput captureStillImageAsynchronouslyFromConnection:self.videoConnection completionHandler:
                  ^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
                      //returns NSData representation of the image data and metadata
                      NSData *imageD = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
-                     dispatch_sync(self.imageQueue, ^{
+                     dispatch_async(self.imageQueue, ^{
                          [imageD writeToFile:str atomically:YES];
                      });
                  }];
                 
 //             });
+            sleep(1);
             i++;
         }
+//        sleep(1);
     } else {
         NSLog(@"capture session not running");
     }
