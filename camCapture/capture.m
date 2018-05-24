@@ -93,9 +93,6 @@
         }
         if (self.videoConnection) {break;}
     }
-    if ([self.captureSession canAddOutput:self.imageOutput]) {
-        [self.captureSession addOutput:self.imageOutput];
-    }
 }
 
 -(void)startSession {
@@ -105,7 +102,6 @@
     if (self.captureSession.running) {
         int i = 0;
         while (i < 2) {
-//            dispatch_async(self.imageQueue, ^{
                 NSString *str = [NSString stringWithFormat:@"temp%d.jpg",i];
                 [self.imageOutput captureStillImageAsynchronouslyFromConnection:self.videoConnection completionHandler:
                  ^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
@@ -115,12 +111,10 @@
                          [imageD writeToFile:str atomically:YES];
                      });
                  }];
-                
-//             });
+            //make thread sleep so that it can finish writing image data to file
             sleep(1);
             i++;
         }
-//        sleep(1);
     } else {
         NSLog(@"capture session not running");
     }
