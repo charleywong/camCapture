@@ -122,5 +122,8 @@
 
 -(void) stopSession {
     [self.captureSession stopRunning];
+    self.captureSession = nil;
+    self.deviceInput = nil;
+    self.imageOutput = nil;
 }
 @end
